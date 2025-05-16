@@ -5,19 +5,17 @@ RUN apt update && \
     apt install -y wget curl unzip openssh-client git python3 && \
     apt clean
 
-# Download and install Upterm
-RUN wget https://github.com/owenthereal/upterm/releases/latest/download/upterm_linux_amd64.tar.gz -O /tmp/upterm.tar.gz && \
-    tar -xzf /tmp/upterm.tar.gz -C /usr/local/bin/ && \
-    chmod +x /usr/local/bin/upterm && \
-    rm /tmp/upterm.tar.gz
+# Download correct Upterm binary directly
+RUN wget https://github.com/owenthereal/upterm/releases/download/v0.7.5/upterm-linux-amd64 -O /usr/local/bin/upterm && \
+    chmod +x /usr/local/bin/upterm
 
-# Create a dummy web server to keep Render container awake
+# Dummy web directory to keep Render alive
 RUN mkdir -p /app && echo "Upterm session running..." > /app/index.html
 WORKDIR /app
 
-# Expose dummy port to prevent sleep
+# Keep port alive
 EXPOSE 6080
 
-# Start Upterm and dummy web server
+# Run dummy web server + upterm
 CMD python3 -m http.server 6080 & \
-    upterm host --server ssh.upterm.dev:22 --force-command bash on 
+    upterm host --server=ssh.upterm.dev:22 --force-command=bash
