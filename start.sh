@@ -1,8 +1,7 @@
 #!/bin/bash
 
-# Start dummy HTTP server to keep Render/Fly awake
+# Start dummy server to prevent container from sleeping
 python3 -m http.server 8080 &
 
-# Start SSHX and show link
-echo "Starting sshx..."
+# Start SSHX session (auto generates link)
 sshx serve --once
