@@ -11,13 +11,13 @@ RUN wget https://github.com/owenthereal/upterm/releases/latest/download/upterm_l
     chmod +x /usr/local/bin/upterm && \
     rm /tmp/upterm.tar.gz
 
-# Create a dummy web server directory
+# Create a dummy web server to keep Render container awake
 RUN mkdir -p /app && echo "Upterm session running..." > /app/index.html
 WORKDIR /app
 
-# Expose port 6080 to keep the container alive
+# Expose dummy port to prevent sleep
 EXPOSE 6080
 
-# Start a dummy HTTP server and launch Upterm
+# Start Upterm and dummy web server
 CMD python3 -m http.server 6080 & \
-    upterm host --force-command bash
+    upterm host --server ssh.upterm.dev:22 --force-command bash on 
