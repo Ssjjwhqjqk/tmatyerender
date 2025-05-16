@@ -6,18 +6,17 @@ RUN apt update && \
     apt clean
 
 # Download and install SSHX
-RUN curl -fsSL https://github.com/sshxio/sshx/releases/latest/download/sshx-linux-amd64 -o /usr/local/bin/sshx && \
+RUN curl -L https://github.com/sshxio/sshx/releases/download/v0.4.2/sshx-linux-amd64 -o /usr/local/bin/sshx && \
     chmod +x /usr/local/bin/sshx
 
-# Create app directory and dummy page
+# Set working directory
 WORKDIR /app
 RUN echo "SSHX session running..." > index.html
 
-# Create startup script
+# Copy start script
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
 
-# Keep container awake
 EXPOSE 8080
 
 CMD ["/start.sh"]
