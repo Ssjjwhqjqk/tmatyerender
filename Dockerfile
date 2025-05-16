@@ -1,19 +1,23 @@
 FROM ubuntu:22.04
 
-# Install packages
+# Install dependencies
 RUN apt update && \
-    apt install -y wget curl git tmate neofetch python3 && \
+    apt install -y curl unzip git wget python3 && \
     apt clean
 
-# Set up welcome message with neofetch
-RUN echo "clear && neofetch && tmate" > /root/.bashrc
+# Download and install SSHX
+RUN curl -fsSL https://github.com/sshxio/sshx/releases/latest/download/sshx-linux-amd64 -o /usr/local/bin/sshx && \
+    chmod +x /usr/local/bin/sshx
 
-# Create a dummy app directory
+# Create app directory and dummy page
 WORKDIR /app
-RUN echo "Render container running..." > index.html
+RUN echo "SSHX session running..." > index.html
 
-# Expose a port to keep it alive
+# Create startup script
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
+
+# Keep container awake
 EXPOSE 8080
 
-# Start dummy HTTP server to keep container alive
-CMD python3 -m http.server 8080
+CMD ["/start.sh"]
