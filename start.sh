@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Start dummy server to prevent container from sleeping
+# Start dummy HTTP server in background
 python3 -m http.server 8080 &
 
-# Start SSHX session (auto generates link)
+# Run SSHX
 sshx serve --once
