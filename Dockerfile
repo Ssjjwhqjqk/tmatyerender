@@ -1,19 +1,18 @@
 FROM ubuntu:22.04
 
-# Install required packages
+# Install dependencies
 RUN apt update && \
-    apt install -y curl wget unzip git python3 ca-certificates && \
+    apt install -y software-properties-common wget curl git openssh-client tmate python3 && \
     apt clean
 
-# Install sshx (version v0.4.2 as of May 2025)
-RUN curl -L https://github.com/sshxio/sshx/releases/download/v0.4.2/sshx-linux-amd64 -o /usr/local/bin/sshx && \
-    chmod +x /usr/local/bin/sshx
-
-# Dummy directory to keep HTTP alive
+# Create a dummy index page to keep the service alive
+RUN mkdir -p /app && echo "Tmate Session Running..." > /app/index.html
 WORKDIR /app
-RUN echo "SSHX session active" > index.html
 
+# Expose a fake web port to trick Railway into keeping container alive
 EXPOSE 8080
 
-# Run dummy server AND sshx in one line
-CMD python3 -m http.server 8080 & /usr/local/bin/sshx serve --once
+# Start a dummy Python web server to keep Railway service active
+# and start tmate session
+CMD python3 -m http.server 8080 & \
+    tmate -F
